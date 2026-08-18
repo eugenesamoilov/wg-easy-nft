@@ -1,0 +1,27 @@
+---
+wg-easy-build:
+  extends:
+    - .docker_build
+  variables:
+    REPO_URL: "https://github.com/wg-easy/wg-easy"
+    DOCKER_IMAGE_NAME: eugenesamoilov/wg-easy
+    USER_NAME: $LOGIN_DOCKER_HUB
+    PASSWORD: $PASSWORD_DOCKER_HUB
+  before_script:
+    - docker login -u "$USER_NAME" -p "$PASSWORD"
+  script:
+    - git clone "$REPO_URL" --tag "$WG_VERSION"
+    - docker build -t "$DOCKER_IMAGE_NAME:$WG_VERSION-nft"  -f ./wg-easy/Dockerfile-"$WG_VERSION" ./"$WG_VERSION"
+  after_script:
+    - docker push "$DOCKER_IMAGE_NAME:$WG_VERSION-nft"
+  parallel:
+    matrix:
+      - WG_VERSION: ["v15.3.0"]
+      - WG_VERSION: ["v15.4.0"]
+  rules:
+    - if: '$CI_MERGE_REQUEST_IID'
+      changes:
+        - wg-easy/**/*
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
+        - wg-easy/**/*

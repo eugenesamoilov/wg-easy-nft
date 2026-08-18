@@ -1,0 +1,6 @@
+---
+.docker_build:
+  image: docker:cli
+  stage: build
+  services:
+    - docker:dind
