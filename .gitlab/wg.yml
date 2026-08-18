@@ -18,6 +18,7 @@ wg-easy-build:
     matrix:
       - WG_VERSION: ["v15.3.0"]
       - WG_VERSION: ["v15.4.0"]
+      - WG_VERSION: ["v15.2.2"]
   rules:
     - if: '$CI_MERGE_REQUEST_IID'
       changes:
